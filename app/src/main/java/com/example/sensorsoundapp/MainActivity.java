@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener
 {
-
     TextView tvx, tvy, tvz;
     private SensorManager mSensorManager;
     private Sensor mSensor;
@@ -40,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         //Initialize the mediaplayer here to avoid crashes.
         player = MediaPlayer.create(this, R.raw.soundfile);
+
+        //Disable the looping behaviour
+        player.setLooping(false);
 
         //Get a reference to the app window
         appWindow = findViewById(R.id.appWindow);
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         //Call the detect method
         DetectWhenFlat(event, x,y,z);
+
     }
 
     @Override
@@ -103,8 +106,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         {
             //Change the colour of teh background to indicate it's flat
             appWindow.setBackgroundColor(getColor(R.color.purple_200));
-            //Stop playing the sound effect
-            //player.pause();
 
             //Print some feedback to user
             Toast.makeText(this, "Phone is currently flat", Toast.LENGTH_SHORT).show();
@@ -112,7 +113,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if(isFlat == false)
             {
                 isFlat = true;
+
+                //Check if audio is playing
+                if(player.isPlaying())
+                {
+                    //Stop playing the sound effect
+                    player.stop();
+                }
             }
+
         }
         else
         {
