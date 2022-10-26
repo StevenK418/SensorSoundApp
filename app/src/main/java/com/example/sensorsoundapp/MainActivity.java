@@ -8,27 +8,31 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity implements SensorEventListener
+{
 
     TextView tvx, tvy, tvz;
     private SensorManager mSensorManager;
     private Sensor mSensor;
+    private boolean isFlat = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tvx = findViewById(R.id.tvxval);  // this assumes there are three textviews
-        tvy = findViewById(R.id.tvyval);  // in your xml file called tvxval, tvyval
-        tvz = findViewById(R.id.tvzval);  // and tvzval
+        //Get references to the Textviews
+        tvx = findViewById(R.id.tvxval);
+        tvy = findViewById(R.id.tvyval);
+        tvz = findViewById(R.id.tvzval);
 
         // choose the sensor you want
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
     }
+
     /*
      * When the app is brought to the foreground - using app on screen
      */
@@ -63,10 +67,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         tvy.setText(String.valueOf(y));
         tvz.setText(String.valueOf(z));
 
+
+        DetectWhenFlat(event);
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // not using
+    }
+
+    //Detects when the phone is on a flat surface
+    public void DetectWhenFlat(SensorEvent event)
+    {
+        float x,y,z;
+
+        //Detect all non minus values
+        x = Math.abs(event.values[0]);
+        y = Math.abs(event.values[1]);
+        z = Math.abs(event.values[2]);
+
+        //Check if phone is flat using the sense events
+        if (x < 1 && y< 1 && z > 9)
+        {
+            if(isFlat == false)
+            {
+                isFlat = true;
+                //Print some feedback to user
+                Toast.makeText(this, "Phone is currently flat", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
