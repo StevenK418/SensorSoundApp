@@ -113,13 +113,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if(isFlat == false)
             {
                 isFlat = true;
-
-                //Check if audio is playing
-                if(player.isPlaying())
-                {
-                    //Stop playing the sound effect
-                    player.stop();
-                }
             }
 
         }
